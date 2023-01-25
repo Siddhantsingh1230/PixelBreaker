@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+
+    <title>PxelBreaker</title>
+
+    <style type="text/css" media="all">
+
+      * {
+
+        margin: 0px;
+
+        padding: 0px;
+
+      }
+
+      body {
+
+        height: 100vh;
+
+        width: 100vw;
+
+        overflow: hidden;
+
+      }
+
+      #canvas {
+
+        background: black;
+
+      }
+
+      #left {
+
+        position: absolute;
+
+        bottom: 3%;
+
+        left: 20%;
+
+        font-size: 12vw;
+
+      }
+
+      #right {
+
+        position: absolute;
+
+        bottom: 3%;
+
+        right: 20%;
+
+        font-size: 12vw;
+
+      }
+
+      #fire {
+
+        color: white;
+
+        position: absolute;
+
+        bottom: 3%;
+
+        left: 41%;
+
+        font-size: 12vw;
+
+      }
+
+      #fire:active,
+
+      #left:active,
+
+      #right:active {
+
+        opacity: 0.6;
+
+      }
+
+    </style>
+
+  </head>
+
+  <body>
+
+    <canvas id="canvas"></canvas>
+
+    <div id="left">◀️</div>
+
+    <div id="right">▶️</div>
+
+    <div id="fire">🔺</div>
+
+    <script type="text/javascript" charset="utf-8">
+
+      const canvas = document.getElementById("canvas");
+
+      const left = document.getElementById("left");
+
+      const right = document.getElementById("right");
+
+      const fire = document.getElementById("fire");
+
+      const ctx = canvas.getContext("2d");
+
+      canvas.width = window.innerWidth;
+
+      canvas.height = window.innerHeight;
+
+      let x = 150;
+
+      let y = 540;
+
+      width = 50;
+
+      height = 50;
+
+      speed = 35;
+
+      let bulletX = x - 5 + width / 2;
+
+      let bulletY = 486;
+
+      let bulletspeed = 10;
+
+      bulletarray = [];
+
+      function player() {
+
+        ctx.strokeStyle = "lightskyblue";
+
+        ctx.fillStyle = "black";
+
+        ctx.beginPath();
+
+        ctx.roundRect(x, y, width, height, [10, 10, 10, 10]);
+
+        ctx.lineWidth = 2;
+
+        ctx.shadowColor = "lightskyblue";
+
+        ctx.shadowBlur = 20;
+
+        ctx.stroke();
+
+        ctx.fill();
+
+      }
+
+      left.addEventListener("click", function () {
+
+        if (x - speed > 0) {
+
+          x -= speed;
+
+          bulletX = x - 5 + width / 2;
+
+        }
+
+      });
+
+      right.addEventListener("click", function () {
+
+        if (x + width + speed < canvas.width) {
+
+          x += speed;
+
+          bulletX = x - 5 + width / 2;
+
+        }
+
+      });
+
+      fire.addEventListener("click", function () {
+
+        bulletarray.push(new Bullet(bulletX, bulletY, bulletspeed));
+
+      });
+
+      function clearscr() {
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      }
+
+      class Bullet {
+
+        constructor(x, y, speed) {
+
+          this.x = x;
+
+          this.y = y;
+
+          this.speed = speed;
+
+        }
+
+        draw() {
+
+          ctx.fillStyle = "lightskyblue";
+
+          ctx.fillRect(this.x, this.y, 10, 15);
+
+          ctx.shadowColor = "lightskyblue";
+
+          ctx.shadowBlur = 10;
+
+        }
+
+        update() {
+
+          this.y -= speed;
+
+        }
+
+      }
+
+      function bulletManager() {
+
+        for (let i = 0; i < bulletarray.length; i++) {
+
+          bulletarray[i].draw();
+
+          bulletarray[i].update();
+
+        }
+
+      }
+
+      let enemyarray = [];
+
+      class enemy {
+
+        constructor(x, y, val) {
+
+          this.x = x;
+
+          this.y = y;
+
+          this.value = val;
+
+        }
+
+        
+
+        draw() {
+
+          ctx.strokeStyle = "deeppink";
+
+          ctx.fillStyle = "black";
+
+          ctx.beginPath();
+
+          ctx.roundRect(this.x, this.y, width, height, [10, 10, 10, 10]);
+
+          ctx.lineWidth = 2;
+
+          ctx.shadowColor = "deeppink";
+
+          ctx.shadowBlur = 20;
+
+          ctx.stroke();
+
+          ctx.fill();
+
+          ctx.strokeStyle = "white";
+
+          ctx.font = "20px Comic Sans MS";
+
+          ctx.textAlign = "center";
+
+          ctx.strokeText(
+
+            this.value,
+
+            this.x + width / 2,
+
+            this.y + height / 2 + 6
+
+          );
+
+        }
+
+      }
+
+      function enemyinit(){
+
+      let val = Math.random() * (20 - 5) + 5;
+
+      val = val.toFixed(0);
+
+      enemyarray.push(new enemy(15, 11, val));
+
+      val = Math.random() * (20 - 5) + 5;
+
+      val = val.toFixed(0);
+
+      enemyarray.push(new enemy(20 + width, 11, val));
+
+      val = Math.random() * (20 - 5) + 5;
+
+      val = val.toFixed(0);
+
+      enemyarray.push(new enemy(25 + 2 * width, 11, val));
+
+      val = Math.random() * (20 - 5) + 5;
+
+      val = val.toFixed(0);
+
+      enemyarray.push(new enemy(30 + 3 * width, 11, val));
+
+      val = Math.random() * (20 - 5) + 5;
+
+      val = val.toFixed(0);
+
+      enemyarray.push(new enemy(35 + 4 * width, 11, val));
+
+      val = Math.random() * (20 - 5) + 5;
+
+      val = val.toFixed(0);
+
+      enemyarray.push(new enemy(40 + 5 * width, 11, val));
+
+    }
+
+    enemyinit();
+
+    let destruct=0;
+
+      function enemymanager() {
+
+        for (let i = 0; i < enemyarray.length; i++) {
+
+          enemyarray[i].draw();
+
+        }
+
+      }
+
+      function insertAt(array, index, ...elementsArray) {
+
+    array.splice(index, 0, ...elementsArray);
+
+}
+
+      function damage() {
+
+        
+
+        for (let i = 0; i < bulletarray.length; i++) {
+
+          if (bulletarray[0].y>-10&&bulletarray[i].y<10
+
+          &&bulletarray[i].x>0&&bulletarray[i].x<50) {
+
+            enemyarray[0].value--;
+
+            
+
+            bulletarray.shift();
+
+            if(enemyarray[0].value==0){
+
+              enemyarray.splice(0,1);
+
+          insertAt(enemyarray,0,(new enemy(-100,-100,-1)));
+
+          destruct++;
+
+          }
+
+            break;
+
+          }
+
+          
+
+          if (bulletarray[0].y>-10&&bulletarray[i].y<10
+
+          &&bulletarray[i].x>60&&bulletarray[i].x<110) {
+
+            enemyarray[1].value--;
+
+            bulletarray.shift();
+
+            if(enemyarray[1].value==0){
+
+             enemyarray.splice(1,1);
+
+          insertAt(enemyarray,1,(new enemy(-100,-100,-1)));
+
+          destruct++;
+
+          }
+
+            break;
+
+          }
+
+          if (bulletarray[0].y>-10&&bulletarray[i].y<10
+
+          &&bulletarray[i].x>120&&bulletarray[i].x<190) {
+
+            enemyarray[2].value--;
+
+            bulletarray.shift();
+
+            if(enemyarray[2].value==0){
+
+             enemyarray.splice(2,1);
+
+            insertAt(enemyarray,2,(new enemy(-100,-100,-1)));
+
+            destruct++;
+
+          }
+
+            break;
+
+          }
+
+          if (bulletarray[0].y>-10&&bulletarray[i].y<10
+
+          &&bulletarray[i].x>180&&bulletarray[i].x<230) {
+
+            enemyarray[3].value--;
+
+            bulletarray.shift();
+
+            if(enemyarray[3].value==0){
+
+             enemyarray.splice(3,1);
+
+            insertAt(enemyarray,3,(new enemy(-100,-100,-1)));
+
+            destruct++;
+
+          }
+
+            break;
+
+          }
+
+          if (bulletarray[0].y>-10&&bulletarray[i].y<10
+
+          &&bulletarray[i].x>210&&bulletarray[i].x<310) {
+
+            enemyarray[4].value--;
+
+            bulletarray.shift();
+
+            if(enemyarray[4].value==0){
+
+             enemyarray.splice(4,1);
+
+            insertAt(enemyarray,4,(new enemy(-100,-100,-1)));
+
+            destruct++;
+
+          }
+
+            break;
+
+          }
+
+          if (bulletarray[0].y>-10&&bulletarray[i].y<10
+
+          &&bulletarray[i].x>=310&&bulletarray[i].x<360) {
+
+            enemyarray[5].value--;
+
+            bulletarray.shift();
+
+            if(enemyarray[5].value==0){
+
+             enemyarray.splice(5,1);
+
+            insertAt(enemyarray,5,(new enemy(-100,-100,-1)));
+
+            destruct++;
+
+          }
+
+            break;
+
+          }
+
+        }
+
+        if(destruct==6){
+
+          enemyarray=[];
+
+          enemyinit();
+
+          destruct=0;
+
+        }
+
+      }
+
+      function main() {
+
+        requestAnimationFrame(main);
+
+        clearscr();
+
+        player();
+
+        bulletManager();
+
+        enemymanager();
+
+        damage();
+
+      }
+
+      main();
+
+      
+
+    </script>
+
+  </body>
+
+</html>
+
